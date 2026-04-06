@@ -1,20 +1,55 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Cloto - Career Coach AI & CV Expert
 
-# Run and deploy your AI Studio app
+**Cloto** è un assistente intelligente progettato per guidarti passo dopo passo nella creazione di un curriculum vitae perfetto. Agisce come un recruiter esperto, estrapolando valore dalle tue esperienze lavorative e strutturandole in modo professionale.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/db460125-6295-40c9-b402-3189b5721887
+## 🌟 Caratteristiche Principali
 
-## Run Locally
+- **Interazione Intelligente**: Cloto analizza le tue risposte e pone domande mirate per valorizzare mansioni e risultati.
+- **Memoria Strutturata**: L'agente mantiene uno stato interno suddiviso in blocchi (Dati, Esperienze, Formazione, Competenze, Extra).
+- **Generazione Markdown**: Una volta raccolte tutte le informazioni, Cloto genera un CV completo pronto per essere esportato.
+- **Resilienza Avanzata**: Integrazione sicura con Gemini AI, dotata di meccanismi di retry e gestione strutturata dell'output.
 
-**Prerequisites:**  Node.js
+## 🛠️ Stack Tecnologico
 
+- **Frontend**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Animazioni**: [Framer Motion](https://www.framer.com/motion/)
+- **Icone**: [Lucide React](https://lucide.dev/)
+- **AI Engine**: [Google Gemini 1.5 Flash](https://aistudio.google.com/) via `@google/genai`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🚀 Inizio Rapido
+
+### Requisiti
+- Node.js 18+
+- Una API Key di Google Gemini
+
+### Installazione
+1. Scarica o clona il repository.
+2. Installa le dipendenze:
+   ```bash
+   npm install
+   ```
+3. Configura le variabili d'ambiente:
+   - Copia `.env.example` in `.env`.
+   - Inserisci la tua `VITE_GEMINI_API_KEY`.
+
+### Sviluppo
+Lancia il progetto in locale:
+```bash
+npm run dev
+```
+
+---
+
+## 🔒 Sicurezza e Best Practices
+Il progetto è stato sottoposto a un audit completo per garantire:
+- **Protezione Segreti**: Nessuna chiave API è hardcoded nel repository.
+- **Structured Output**: Uso di JSON Schema per risposte deterministiche dall'IA.
+- **Robustezza**: Gestione degli errori lato client con exponential backoff.
+
+---
+
+## 📄 Licenza
+Questo progetto è rilasciato sotto licenza MIT.

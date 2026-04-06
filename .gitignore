@@ -1,8 +1,38 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
+# Logs
+logs
 *.log
-.env*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+.env.*
 !.env.example
+
+# Custom Gemini Audit Files (Antigravity Generated)
+audit_progress.md
+gemini_audit_report.md
+LOCAL_TESTING.md
+GITHUB_SECURITY_CHECK.md
+implementation_plan.md
+task.md
+walkthrough.md
