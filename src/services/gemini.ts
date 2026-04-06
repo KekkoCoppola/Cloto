@@ -1,51 +1,58 @@
-import { GoogleGenAI } from '@google/genai';
-import { SYSTEM_PROMPT } from '../constants/prompts';
-import { withRetry } from '../utils/retry';
-import { GeminiResponse } from '../types';
+import { withRetry, RetryableError } from '../utils/retry';
+import type { GeminiResponse } from '../types';
 
-const RESPONSE_SCHEMA = {
-  type: 'object',
-  properties: {
-    progress: { type: 'number', description: 'Percentuale di completamento totale (0-100)' },
-    memory: {
-      type: 'object',
-      properties: {
-        dati_personali: { type: 'string' },
-        esperienze: { type: 'string' },
-        formazione: { type: 'string' },
-        competenze: { type: 'string' },
-        extra: { type: 'string' }
-      },
-      required: ['dati_personali', 'esperienze', 'formazione', 'competenze', 'extra']
-    },
-    answer: { type: 'string', description: 'La tua risposta testuale per l\'utente' },
-    is_cv_complete: { type: 'boolean', description: 'True se il CV è pronto per la generazione' }
-  },
-  required: ['progress', 'memory', 'answer', 'is_cv_complete']
-};
-
-export class GeminiService {
-  private ai: GoogleGenAI;
-
-  constructor(apiKey: string) {
-    this.ai = new GoogleGenAI({ apiKey });
-  }
-
-  async createChat() {
-    return this.ai.chats.create({
-      model: 'gemini-1.5-flash',
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        temperature: 0.7,
-        responseMimeType: 'application/json',
-        responseJsonSchema: RESPONSE_SCHEMA as any,
-      },
+/**
+ * Client-side chat service.
+ * Communicates with the Express backend via REST — no SDK or API key on the client.
+ *
+ * Retry policy (H-1 fix):
+ *   - 429 (rate limited) and 5xx (server errors) → RetryableError → withRetry retries
+ *   - 4xx client errors (400, 404, etc.)         → Error → fail fast, no retry
+ */
+export class ChatService {
+  /**
+   * Creates a new server-side chat session and retrieves the initial greeting.
+   * Returns the sessionId (opaque token) and the first AI response.
+   */
+  async createSession(): Promise<{ sessionId: string; data: GeminiResponse }> {
+    const response = await withRetry(async () => {
+      const res = await fetch('/api/chat/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      // Only 429 (rate limited) and 5xx (transient server errors) merit a retry.
+      if (res.status === 429 || res.status >= 500) {
+        throw new RetryableError(`Retriable error ${res.status} on /api/chat/create`, res.status);
+      }
+      if (!res.ok) {
+        throw new Error(`Non-retriable error ${res.status} on /api/chat/create`);
+      }
+      return res;
     });
+    return response.json();
   }
 
-  async sendMessage(chat: any, message: string): Promise<GeminiResponse> {
-    const wrappedMessage = `<user_input>${message}</user_input>`;
-    const response = await withRetry(() => chat.sendMessage({ message: wrappedMessage }));
-    return JSON.parse(response.text);
+  /**
+   * Sends a user message to an existing session.
+   * @param sessionId - Opaque token returned by createSession()
+   * @param message   - Raw user text (sanitization happens server-side)
+   */
+  async sendMessage(sessionId: string, message: string): Promise<GeminiResponse> {
+    const response = await withRetry(async () => {
+      const res = await fetch('/api/chat/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, message }),
+      });
+      // Only 429 (rate limited) and 5xx (transient server errors) merit a retry.
+      if (res.status === 429 || res.status >= 500) {
+        throw new RetryableError(`Retriable error ${res.status} on /api/chat/message`, res.status);
+      }
+      if (!res.ok) {
+        throw new Error(`Non-retriable error ${res.status} on /api/chat/message`);
+      }
+      return res;
+    });
+    return response.json();
   }
 }
