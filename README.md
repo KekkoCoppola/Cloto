@@ -1,7 +1,19 @@
-# Cloto - Career Coach AI & CV Expert
+<div align="center">
+  <br />
+  <img src="src/assets/logo/NoBG.png" alt="Cloto Logo" width="180" />
+  <br /><br />
 
-**Cloto** è un assistente intelligente progettato per guidarti passo dopo passo nella creazione di un curriculum vitae perfetto. Agisce come un recruiter esperto, estrapolando valore dalle tue esperienze lavorative e strutturandole in modo professionale.
+  <h1>Cloto </h1>
+  <h3>✨ Assistente intelligente progettato per guidarti passo dopo passo nella creazione di un curriculum vitae perfetto. Agisce come un recruiter esperto, estrapolando valore dalle tue esperienze lavorative e strutturandole in modo professionale. ✨</h3>
 
+  <p>
+    <a href="https://kekkocoppola.github.io">
+      <img src="https://img.shields.io/badge/LIVE-CLOTO.AI-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1a1a1a" alt="Live Demo" />
+    </a>
+  </p>
+</div>
+
+<br />
 ---
 
 ## 🌟 Caratteristiche Principali
