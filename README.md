@@ -14,7 +14,6 @@
 </div>
 
 <br />
----
 
 ## 🌟 Caratteristiche Principali
 
