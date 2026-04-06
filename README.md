@@ -4,6 +4,7 @@
   <br /><br />
 
   <h1>Cloto </h1>
+  <h2>Il tuo futuro è un filo prezioso: lascialo tessere a Cloto.</h2>
   <h3>✨ Assistente intelligente progettato per guidarti passo dopo passo nella creazione di un curriculum vitae perfetto. Agisce come un recruiter esperto, estrapolando valore dalle tue esperienze lavorative e strutturandole in modo professionale. ✨</h3>
 
   <p>
