@@ -14,11 +14,12 @@ export class ChatService {
    * Creates a new server-side chat session and retrieves the initial greeting.
    * Returns the sessionId (opaque token) and the first AI response.
    */
-  async createSession(): Promise<{ sessionId: string; data: GeminiResponse }> {
+  async createSession(sessionId?: string | null): Promise<{ sessionId: string; data: GeminiResponse }> {
     const response = await withRetry(async () => {
       const res = await fetch('/api/chat/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
       });
       // Only 429 (rate limited) and 5xx (transient server errors) merit a retry.
       if (res.status === 429 || res.status >= 500) {

@@ -3,64 +3,57 @@
   <img src="src/assets/logo/NoBG.png" alt="Cloto Logo" width="180" />
   <br /><br />
 
-  <h1>Cloto </h1>
-  <h3>✨ Assistente intelligente progettato per guidarti passo dopo passo nella creazione di un curriculum vitae perfetto. Agisce come un recruiter esperto, estrapolando valore dalle tue esperienze lavorative e strutturandole in modo professionale. ✨</h3>
-
-  <p>
-    <a href="https://kekkocoppola.github.io">
-      <img src="https://img.shields.io/badge/LIVE-CLOTO.AI-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1a1a1a" alt="Live Demo" />
-    </a>
-  </p>
+  <h1>Cloto</h1>
+  <h3>Assistente AI per guidare la scrittura di un curriculum, estrarre competenze dalle risposte e mantenere una memoria strutturata.</h3>
 </div>
 
-<br />
+## Caratteristiche
 
-## 🌟 Caratteristiche Principali
+- **Interazione guidata**: Cloto fa una domanda alla volta e cerca dettagli concreti su ruolo, impatto, strumenti e risultati.
+- **Memoria persistente**: lo stato del CV viene salvato localmente in SQLite lato server.
+- **Memoria strutturata**: dati personali, esperienze, formazione, competenze tecniche, competenze trasversali, lingue, certificazioni, progetti, extra e domande aperte.
+- **Hardening anti prompt-injection**: l'input utente viene trattato come dato non fidato e il server valida gli aggiornamenti prima di salvarli.
+- **Progetto free/open source**: nessun database cloud, vector DB commerciale, fine-tuning o provider LLM aggiuntivo.
 
-- **Interazione Intelligente**: Cloto analizza le tue risposte e pone domande mirate per valorizzare mansioni e risultati.
-- **Memoria Strutturata**: L'agente mantiene uno stato interno suddiviso in blocchi (Dati, Esperienze, Formazione, Competenze, Extra).
-- **Generazione Markdown**: Una volta raccolte tutte le informazioni, Cloto genera un CV completo pronto per essere esportato.
-- **Resilienza Avanzata**: Integrazione sicura con Gemini AI, dotata di meccanismi di retry e gestione strutturata dell'output.
+## Stack
 
-## 🛠️ Stack Tecnologico
+- **Frontend**: React 19 + Vite
+- **Styling**: Tailwind CSS 4
+- **Backend**: Express
+- **AI Engine**: Google Gemini via `@google/genai`
+- **Memoria locale**: SQLite integrato in Node.js (`node:sqlite`)
 
-- **Frontend**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Animazioni**: [Framer Motion](https://www.framer.com/motion/)
-- **Icone**: [Lucide React](https://lucide.dev/)
-- **AI Engine**: [Google Gemini 1.5 Flash](https://aistudio.google.com/) via `@google/genai`
+## Requisiti
 
-## 🚀 Inizio Rapido
+- Node.js 24+
+- Una API key Gemini compatibile con il piano Google AI Pro disponibile all'utente
 
-### Requisiti
-- Node.js 18+
-- Una API Key di Google Gemini
+## Installazione
 
-### Installazione
-1. Scarica o clona il repository.
-2. Installa le dipendenze:
+1. Installa le dipendenze:
    ```bash
    npm install
    ```
-3. Configura le variabili d'ambiente:
-   - Copia `.env.example` in `.env`.
-   - Inserisci la tua `VITE_GEMINI_API_KEY`.
+2. Copia `.env.example` in `.env`.
+3. Inserisci `GEMINI_API_KEY`.
 
-### Sviluppo
-Lancia il progetto in locale:
+## Sviluppo
+
 ```bash
 npm run dev
 ```
 
----
+Il backend usa `data/cloto.sqlite` per salvare sessioni, messaggi e memoria CV. La cartella `data/` e ignorata da Git per evitare di committare dati personali.
 
-## 🔒 Sicurezza e Best Practices
-Il progetto è stato sottoposto a un audit completo per garantire:
-- **Protezione Segreti**: Nessuna chiave API è hardcoded nel repository.
-- **Structured Output**: Uso di JSON Schema per risposte deterministiche dall'IA.
-- **Robustezza**: Gestione degli errori lato client con exponential backoff.
+## Validazione
 
----
+```bash
+npm run lint
+```
 
-## 📄 Licenza
-Questo progetto è rilasciato sotto licenza MIT.
+## Vincoli
+
+- Non usare servizi a pagamento oltre alla API Gemini prevista.
+- Non aggiungere provider LLM diversi da Gemini.
+- Non introdurre fine-tuning, embedding cloud o vector database commerciali.
+- La generazione LaTeX e prevista come fase successiva.

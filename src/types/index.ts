@@ -10,8 +10,13 @@ export interface MemoryState {
   dati_personali: string;
   esperienze: string;
   formazione: string;
-  competenze: string;
+  competenze_tecniche: string;
+  competenze_trasversali: string;
+  lingue: string;
+  certificazioni: string;
+  progetti: string;
   extra: string;
+  lacune_domande: string;
 }
 
 export interface GeminiResponse {
@@ -19,4 +24,6 @@ export interface GeminiResponse {
   memory: MemoryState;
   answer: string;
   is_cv_complete: boolean;
+  next_focus: keyof MemoryState | 'cv_review';
+  warnings: string[];
 }

@@ -1,6 +1,8 @@
 import { useState, KeyboardEvent } from 'react';
 import { Send } from 'lucide-react';
 
+const MAX_INPUT_LENGTH = 4000;
+
 interface InputAreaProps {
   onSendMessage: (text: string) => void;
   isLoading: boolean;
@@ -11,9 +13,9 @@ export function InputArea({ onSendMessage, isLoading }: InputAreaProps) {
 
   const handleSend = () => {
     if (!input.trim() || isLoading) return;
-    onSendMessage(input);
+    onSendMessage(input.slice(0, MAX_INPUT_LENGTH));
     setInput('');
-    
+
     const textarea = document.querySelector('textarea');
     if (textarea) {
       textarea.style.height = '44px';
@@ -33,7 +35,7 @@ export function InputArea({ onSendMessage, isLoading }: InputAreaProps) {
         <textarea
           value={input}
           onChange={(e) => {
-            setInput(e.target.value);
+            setInput(e.target.value.slice(0, MAX_INPUT_LENGTH));
             e.target.style.height = 'auto';
             e.target.style.height = `${Math.min(e.target.scrollHeight, 128)}px`;
           }}
@@ -41,12 +43,13 @@ export function InputArea({ onSendMessage, isLoading }: InputAreaProps) {
           placeholder="Scrivi un messaggio..."
           className="flex-1 bg-transparent border-none focus:ring-0 resize-none py-3 px-4 text-[15px] text-gray-800 placeholder-gray-500 outline-none"
           rows={1}
-          style={{ 
+          style={{
             height: '44px',
             minHeight: '44px',
-            maxHeight: '128px'
+            maxHeight: '128px',
           }}
           disabled={isLoading}
+          maxLength={MAX_INPUT_LENGTH}
         />
         <button
           onClick={handleSend}
@@ -57,7 +60,7 @@ export function InputArea({ onSendMessage, isLoading }: InputAreaProps) {
         </button>
       </div>
       <p className="text-center text-[10px] text-gray-400 mt-2">
-        L'AI può commettere errori. Controlla sempre le informazioni.
+        L'AI puo commettere errori. Controlla sempre le informazioni. {input.length}/{MAX_INPUT_LENGTH}
       </p>
     </footer>
   );

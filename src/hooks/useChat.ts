@@ -2,42 +2,54 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChatService } from '../services/gemini';
 import { Message, MemoryState } from '../types';
 
+const SESSION_STORAGE_KEY = 'cloto.sessionId';
+
+const EMPTY_MEMORY: MemoryState = {
+  dati_personali: '',
+  esperienze: '',
+  formazione: '',
+  competenze_tecniche: '',
+  competenze_trasversali: '',
+  lingue: '',
+  certificazioni: '',
+  progetti: '',
+  extra: '',
+  lacune_domande: '',
+};
+
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [memory, setMemory] = useState<MemoryState>({
-    dati_personali: '',
-    esperienze: '',
-    formazione: '',
-    competenze: '',
-    extra: '',
-  });
+  const [memory, setMemory] = useState<MemoryState>(EMPTY_MEMORY);
 
-  // CRITICA-01 fix: refs prevent re-instantiation on every render.
   const chatServiceRef = useRef(new ChatService());
   const sessionIdRef = useRef<string | null>(null);
 
   const initialize = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { sessionId, data } = await chatServiceRef.current.createSession();
+      const storedSessionId = localStorage.getItem(SESSION_STORAGE_KEY);
+      const { sessionId, data } = await chatServiceRef.current.createSession(storedSessionId);
       sessionIdRef.current = sessionId;
+      localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
 
-      if (data.progress !== undefined) setProgress(data.progress);
-      if (data.memory) setMemory(data.memory);
+      setProgress(data.progress);
+      setMemory(data.memory);
 
       setMessages([{
         id: Date.now().toString(),
         role: 'model',
-        text: data.answer || 'Ciao! Sono il tuo career coach. Iniziamo a costruire il tuo CV perfetto.',
+        text: data.answer || 'Ciao! Sono il tuo career coach. Iniziamo a costruire il tuo CV.',
       }]);
     } catch (error) {
       console.error('Failed to initialize chat:', error);
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+      sessionIdRef.current = null;
       setMessages([{
         id: Date.now().toString(),
         role: 'model',
-        text: "Si è verificato un errore durante l'inizializzazione. Ricarica la pagina per riprovare.",
+        text: "Si e verificato un errore durante l'inizializzazione. Ricarica la pagina per riprovare.",
       }]);
     } finally {
       setIsLoading(false);
@@ -56,8 +68,8 @@ export function useChat() {
     try {
       const data = await chatServiceRef.current.sendMessage(sessionId, text.trim());
 
-      if (data.progress !== undefined) setProgress(data.progress);
-      if (data.memory) setMemory(data.memory);
+      setProgress(data.progress);
+      setMemory(data.memory);
 
       setMessages([
         ...currentMessages,
@@ -69,12 +81,21 @@ export function useChat() {
       ]);
     } catch (error) {
       console.error('Error sending message:', error);
+      const errorText = error instanceof Error && error.message.includes('404')
+        ? 'La sessione non e piu valida. Ricarica la pagina per crearne una nuova.'
+        : 'Scusa, ho riscontrato un errore di connessione. Riprova.';
+
+      if (errorText.includes('sessione')) {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+        sessionIdRef.current = null;
+      }
+
       setMessages([
         ...currentMessages,
         {
           id: (Date.now() + 1).toString(),
           role: 'model',
-          text: 'Scusa, ho riscontrato un errore di connessione. Riprova.',
+          text: errorText,
         },
       ]);
     } finally {
